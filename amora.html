@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>احتفال رودي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body {
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  font-family:"Cairo",sans-serif;
+  background: linear-gradient(135deg,#ff6b6b,#ffb6c1,#800080);
+  background-size:400% 400%;
+  animation: gradientBG 20s ease infinite;
+  color:#fff;
+}
+@keyframes gradientBG{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+.falling-stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.star{position:absolute;background:#fff;border-radius:50%;animation:fall linear infinite;}
+@keyframes fall{to{transform:translateY(100vh) rotate(360deg);opacity:0;}}
+#fireworks{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.main-container{position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;}
+.timer-section{font-size:3em;color:#ffb6c1;text-shadow:0 0 20px #ff6b6b;margin-bottom:20px;}
+.typing-text{font-size:1.5em;color:#ffb6c1;text-shadow:0 0 10px rgba(255,182,193,0.5);width:90%;max-width:800px;min-height:150px;}
+.cursor{display:inline-block;width:4px;background:#ff6b6b;margin-right:3px;animation:blink 0.7s infinite;height:1.2em;vertical-align:middle;}
+@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+.final-section{display:none;text-align:center;margin-top:30px;}
+.big-heart{font-size:10em;color:#ff6b6b;margin-bottom:20px;animation:heartbeat 1.5s infinite;text-shadow:0 0 60px #ff6b6b,0 0 100px #ff6b6b;}
+@keyframes heartbeat{0%,100%{transform:scale(1);}50%{transform:scale(1.2);}}
+.final-message{font-size:2em;color:#ffb6c1;text-shadow:0 0 30px #ff6b6b;}
+.section-title{font-size:2em;color:#ffb6c1;margin-top:20px;margin-bottom:20px;text-shadow:0 0 20px #ff6b6b;}
+</style>
+</head>
+<body>
+
+<div class="falling-stars" id="fallingStars"></div>
+<canvas id="fireworks"></canvas>
+
+<div class="main-container">
+  <div class="timer-section" id="timerSection">دكتورتي ♥</div>
+  <div class="typing-text" id="typingText"></div>
+  <div class="final-section" id="finalSection">
+    <div class="big-heart">❤️</div>
+    <div class="final-message">صنع بكل حب من أجل رودي🤍</div>
+  </div>
+</div>
+
+<audio id="music" loop>
+  <source src="https://www.matb3aa.com/music/Tamer-Hosny/Ekhtart-Sa7/4-Ettamen-ft.3alyaa-Tamer-Hosny-MaTb3aa.Com.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// موسيقى
+window.addEventListener('load',function(){
+  const music=document.getElementById('music');music.volume=0.5;
+  const playMusic=()=>{music.play().catch(()=>setTimeout(playMusic,1000));};
+  setTimeout(playMusic,500);
+});
+
+// النجوم
+function createFallingStars(){
+  const container=document.getElementById('fallingStars');
+  for(let i=0;i<80;i++){
+    const star=document.createElement('div');star.className='star';
+    const size=Math.random()*3+1;star.style.width=star.style.height=size+'px';
+    star.style.left=Math.random()*100+'%';star.style.top=Math.random()*-100+'px';
+    const duration=Math.random()*8+3;star.style.animationDuration=duration+'s';
+    star.style.animationDelay=Math.random()*5+'s';
+    container.appendChild(star);
+  }
+}
+
+// الألعاب النارية
+const canvas=document.getElementById('fireworks');const ctx=canvas.getContext('2d');let fireworks=[];
+function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}resizeCanvas();
+window.addEventListener('resize',resizeCanvas);
+function random(min,max){return Math.random()*(max-min)+min;}
+class Particle{constructor(x,y,color){this.x=x;this.y=y;this.color=color;this.size=random(1.5,3);this.speedX=random(-4,4);this.speedY=random(-4,4);this.gravity=0.05;this.life=100;this.alpha=1;}update(){this.speedY+=this.gravity;this.x+=this.speedX;this.y+=this.speedY;this.life--;this.alpha=this.life/100;}draw(){ctx.save();ctx.globalAlpha=this.alpha;ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=this.color;ctx.fill();ctx.restore();}}
+function createFirework(){const x=random(100,canvas.width-100);const y=random(50,canvas.height/2);const color=`hsl(${Math.random()*360},100%,60%)`;const count=Math.floor(random(60,100));for(let i=0;i<count;i++){fireworks.push(new Particle(x,y,color));}}
+function animateFireworks(){ctx.fillStyle="rgba(0,0,0,0.1)";ctx.fillRect(0,0,canvas.width,canvas.height);if(Math.random()<0.05) createFirework();for(let i=fireworks.length-1;i>=0;i--){fireworks[i].update();fireworks[i].draw();if(fireworks[i].life<=0) fireworks.splice(i,1);}requestAnimationFrame(animateFireworks);}
+function startFireworks(){canvas.style.display='block';animateFireworks();}
+
+// الفقرات الأصلية
+const paragraphs=[
+"هاي روتشي انا عملتلك الهدايا دى لأنك تستاهلي وتستاهلي اكتر من كدا عارف دلوقتي انى مش جنبك ومعرفش اى تفاصيل عندك بس انا عمرى ما هوقف عن دعمك وقت فرحك ووقت زعلك وكل الأوقات ودايما معاكِ وجنبك حتى لو بينا مسافات وبلاد وزعل",
+"دلوقتي بقي وحشتينى خالص وبعيده عني مقدرش اوصفلك قد اى مشتقلك وقد اي وحشاني وحبي ليكى كل يوم ييزيد عن اليوم ال قبله كأني عايش على حبك حقيقى بجد والله رغم انك مش معايا الا انتى أقرب حد ليا",
+"عموماً ى روتشتى هفضل استناكِ إن مكنش بكرا يبقا كل الايام بكرا ومش همل من انتظارك ولا من طريقه حبك ليا ولا من معاملتك ليا ولا اى حاجه انا بحب كل حاجه فيكى وعيوبك قبل مميزاتك",
+"انتى اكتر حد انا حبيته قلبي من بعدك مشافش حد غيرك وبكون فرحان اوي لم تكوني انتى فرحانه بطريقة مش هتتخيلها دايما كنت ببقى خايف عليكى وعلى زعلك وانا هفضل احبك واختارك لو اتكرر عمرى مرتين هختارك انتى",
+"ودلوقتي يمكن زعلانه مني أو من ال حصل بس انا عمرى ولا فى حياتى هبعد عنك حتى لو انتى بعدتي وقفلتى كل الطرق انا عمرى مهعمل كدا وافضل دايما قدامك واعتذرلك واعوضك عن اى حاجه حصلتلك سوا منى انا أو من اى حد تانى وانا بتأسفلك جدا لو زعلتك او اى حاجه حصلتلك بسببي ووعد إن شاء الله اصلحها علشانك دايما"
+];
+
+// كلام ليكي 💖✨
+const rudiTexts=[
+"أحبك حب ماله حدّ أحبك رغم هذا البعد 💖",
+"أفتخر إنّك حبيبي وإنّك الحب الحقيقي يكفي إنّي عند ذكرك أنسى أحزاني وضيقي 😍",
+"جميلة الروح أنتي جمالك الداخلي ينعكس على صورتك فأراكي أجمل الناس على الإطلاق 💕",
+"في كل مرة أراك أشعر وكأن القدر يهمس لي هذا هو مكانك 🌙",
+'"أنتي البداية التي لا أريد لها نهاية والأغنية التي أسمعها بلا ملل 🤍"',
+"في قلبي حب لك يساوي أضعاف ذلك الحب الذي أبوح به لك ❤️",
+"أنت الجمال وتاجه وأنت القمر وسراجه 🌟"
+];
+
+// الكتابة التدريجية
+function typeWriter(element,text,speed,callback){
+let i=0;element.innerHTML='';
+function type(){if(i<text.length){element.innerHTML=text.substring(0,i+1)+'<span class="cursor">|</span>';i++;setTimeout(type,speed);}else{element.innerHTML=text;if(callback) setTimeout(callback,500);}}type();
+}
+
+// عرض الفقرات بالتتابع مع فاصل 10 ثوانٍ
+function showParagraphs(index){
+if(index<paragraphs.length){
+const typingText=document.getElementById('typingText');
+typeWriter(typingText,paragraphs[index],50,()=>{setTimeout(()=>{showParagraphs(index+1);},10000);});
+}else{showRudiTexts(0);}
+}
+
+// عرض نصوص رودي
+function showRudiTexts(index){
+if(index<rudiTexts.length){
+const typingText=document.getElementById('typingText');
+typeWriter(typingText,rudiTexts[index],50,()=>{setTimeout(()=>{showRudiTexts(index+1);},10000);});
+}else{showFinalSection();}
+}
+
+// عرض النهاية
+function showFinalSection(){
+document.getElementById('typingText').style.display='none';
+document.getElementById('timerSection').style.display='none';
+document.getElementById('finalSection').style.display='block';
+startFireworks();
+}
+
+// بدء التشغيل
+window.addEventListener('load',function(){
+createFallingStars();
+setTimeout(()=>{
+startFireworks();
+showParagraphs(0);
+},5000);
+});
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
